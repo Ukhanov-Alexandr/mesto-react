@@ -16,7 +16,7 @@ const Card = (props) => {
           className="element__btn-heart"
           type="button"
           aria-label="like"
-        ></button>
+        />
         <div className="element__like-counter">{props.card.likes.length}</div>
       </div>
     </article>

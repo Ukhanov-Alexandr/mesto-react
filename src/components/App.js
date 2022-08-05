@@ -7,42 +7,48 @@ import ImagePopup from "./ImagePopup";
 
 function App() {
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = React.useState(false);
-  const [isEditProfilePopupOpen, setEditProfilePopupOpen] =
-    React.useState(false);
+  const [isEditProfilePopupOpen, setEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState(null);
 
   function handleCardClick(card) {
     setSelectedCard(card);
-    document.addEventListener("keydown", handleEscClose);
-  }
+  };
 
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
-    document.addEventListener("keydown", handleEscClose);
-  }
+  };
+
   function handleEditProfileClick() {
     setEditProfilePopupOpen(true);
-    document.addEventListener("keydown", handleEscClose);
-  }
+  };
+
   function handleAddPlaceClick() {
     setAddPlacePopupOpen(true);
-    document.addEventListener("keydown", handleEscClose);
-  }
+  };
 
   function closeAllPopups() {
     setEditAvatarPopupOpen(false);
     setEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
     setSelectedCard(null);
-    document.removeEventListener("keydown", handleEscClose);
-  }
+  };
 
-  function handleEscClose(evt) {
-    if (evt.key === "Escape") {
-      closeAllPopups();
+  React.useEffect(() => {
+    if (isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || selectedCard) {
+      function handleEscClose(evt) {
+        if (evt.key === 'Escape') {
+          closeAllPopups();
+        }
+      }
+
+      document.addEventListener('keydown', handleEscClose);
+
+      return () => {
+        document.removeEventListener('keydown', handleEscClose);
+      }
     }
-  }
+  }, [isEditAvatarPopupOpen, isEditProfilePopupOpen, isAddPlacePopupOpen, selectedCard]);
 
   return (
     <div className="page">
