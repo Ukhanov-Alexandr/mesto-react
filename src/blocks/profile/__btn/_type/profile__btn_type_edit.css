@@ -1,0 +1,21 @@
+.profile__btn_type_edit {
+  background-image: url(../../../../images/button-edit.svg);
+  width: 24px;
+  height: 24px;
+  border: none;
+  border: 1px solid #FFF;
+  align-self: flex-end;
+  margin-bottom: 9px;
+  margin-left: 18px;
+  box-sizing: border-box;
+}
+
+@media screen and (max-width: 767px) {
+  .profile__btn_type_edit {
+    width: 18px;
+    height: 18px;
+    margin-left: 10px;
+    margin-bottom: 22px;
+    background-size: 7.5px auto;
+  }
+}
