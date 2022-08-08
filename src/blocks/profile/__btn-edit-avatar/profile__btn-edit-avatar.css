@@ -14,3 +14,10 @@
     cursor: pointer;
     opacity: .8;
 }
+
+@media screen and (max-width: 767px) {
+    .profile__btn-edit-avatar {
+      margin-right: 0;
+      justify-self: center;
+    }
+  }
