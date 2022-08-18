@@ -28,7 +28,7 @@ class Api {
       headers: this._headers,
     })
       .then(res => this._checkResponse(res))
-      .catch(err => console.log(err))
+  
   }
 
   getCards(){
@@ -37,7 +37,7 @@ class Api {
       headers: this._headers,
     })
       .then(res => this._checkResponse(res))
-      .catch(err => console.log(err))
+  
   }
 
   patchProfile(data) {
@@ -50,7 +50,6 @@ class Api {
       }),
     })
       .then(res => this._checkResponse(res))
-      .catch(err => console.log(err))
   }
 
   addNewCard(data){
@@ -63,7 +62,6 @@ class Api {
           }),
       })
       .then(res => this._checkResponse(res))
-      .catch(err => console.log(err))
   }
 
   deleteCard(cardId) {
@@ -72,7 +70,6 @@ class Api {
       headers: this._headers,
     })
     .then(res => this._checkResponse(res))
-    .catch(err => console.log(err))
   }
 
   setlikeCard(cardId) {
@@ -81,7 +78,6 @@ class Api {
       headers: this._headers,
     })
     .then(res => this._checkResponse(res))
-    .catch(err => console.log(err))
   }
 
   unlikeCard(cardId) {
@@ -90,7 +86,6 @@ class Api {
       headers: this._headers,
     })
     .then(res => this._checkResponse(res))
-    .catch(err => console.log(err))
   }
 
   setNewAvatar(data) {
@@ -102,7 +97,6 @@ class Api {
       }),
     })
     .then(res => this._checkResponse(res))
-    .catch(err => console.log(err))
   }
 }
 

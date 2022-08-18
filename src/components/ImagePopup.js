@@ -1,30 +1,33 @@
 import React from "react";
 
-function ImagePopup(props) {
+function ImagePopup({name, card, onClose}) {
+
+  const handleOverlayClick = (evt) => {
+    if (evt.target === evt.currentTarget) {
+      onClose();
+    }
+  }
+
   return (
     <div
-      className={`popup popup-${props.name} ${
-        props.card ? "popup_opened" : ""
+      className={`popup popup-${name} ${
+        card ? "popup_opened" : ""
       }`}
-      onClick={(evt) => {
-        if (evt.target === evt.currentTarget) {
-          props.onClose();
-        }
-      }}
+      onClick={handleOverlayClick}
     >
       <div className="popup-image__container">
         <button
           className="popup__btn-close"
           type="button"
-          onClick={props.onClose}
+          onClick={onClose}
         ></button>
         <img
           className="popup-image__image"
-          src={props.card ? props.card.link : ""}
-          alt={props.card ? props.card.name : ""}
+          src={card ? card.link : ""}
+          alt={card ? card.name : ""}
         />
         <p className="popup-image__caption">
-          {props.card ? props.card.name : ""}
+          {card ? card.name : ""}
         </p>
       </div>
     </div>
