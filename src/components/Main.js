@@ -1,23 +1,10 @@
 import React from "react";
 import api from "../utils/api";
 import Card from "./Card";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function Main(props) {
-  const [userName, setUserName] = React.useState('');
-  const [userDescription, setUserDescription] = React.useState('');
-  const [userAvatar, setUserAvatar] = React.useState('');
-  const [cards, setCards] = React.useState([]);
-
-  React.useEffect(() => {
-    Promise.all([api.getUser(), api.getCards()])
-      .then(([user, cards]) => {
-        setUserName(user.name);
-        setUserDescription(user.about);
-        setUserAvatar(user.avatar);
-        setCards(cards);
-      })
-      .catch((err) => console.log(err));
-  }, []);
+  const currentUser = React.useContext(CurrentUserContext);
 
   return (
     <main className="main">
@@ -28,18 +15,18 @@ function Main(props) {
         />
         <img
           className="profile__avatar"
-          src={userAvatar}
+          src={currentUser.avatar}
           // style={{ backgroundImage: `url(${userAvatar})` }}
           // alt={userName}
         />
-        <h1 className="profile__name">{userName}</h1>
+        <h1 className="profile__name">{currentUser.name}</h1>
         <button
           className="profile__btn profile__btn_type_edit"
           type="button"
           aria-label="Редактировать"
           onClick={props.onEditProfile}
         />
-        <p className="profile__about">{userDescription}</p>
+        <p className="profile__about">{currentUser.about}</p>
         <button
           className="profile__btn profile__btn_type_add"
           type="button"
@@ -48,8 +35,8 @@ function Main(props) {
         />
       </section>
       <section className="elements">
-        {cards.map((item) => (
-          <Card key={item._id} card={item} onClick={props.onCardClick} />
+        {props.cards.map((item) => (
+          <Card key={item._id} card={item} onClick={props.onCardClick} onCardLike={props.onCardLike} onTrashClick={props.onCardDelete}/>
         ))}
       </section>
     </main>

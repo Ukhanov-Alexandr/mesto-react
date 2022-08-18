@@ -6,7 +6,7 @@ function PopupWithForm(props) {
       className={`popup popup-${props.name} ${
         props.isOpen ? "popup_opened" : ""
       }`}
-      onClick={(evt) => {
+      onMouseDown={(evt) => {
         if (evt.target === evt.currentTarget) {
           props.onClose();
         }
@@ -19,7 +19,7 @@ function PopupWithForm(props) {
           onClick={() => props.onClose()}
         ></button>
         <h3 className="popup__title">{props.title}</h3>
-        <form className="popup__form form" name={`${props.name}`} novalidate>
+        <form className="popup__form form" name={`${props.name}`} onSubmit={props.onSubmit} novalidate>
           {props.children}
         </form>
       </div>
