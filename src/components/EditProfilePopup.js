@@ -16,11 +16,11 @@ function EditProfilePopup({isOpen, onClose, onUpdateUser}) {
   }
 
   React.useEffect(() => {
-    if (currentUser.name !== 'undefined' && currentUser.about !== 'undefined') {
+    if (currentUser.name && currentUser.about) {
       setName(currentUser.name);
       setDescription(currentUser.about);
     }
-  }, [currentUser, isOpen, onClose]); 
+  }, [currentUser, isOpen]); 
 
   function handleSubmit(e){
     e.preventDefault();
