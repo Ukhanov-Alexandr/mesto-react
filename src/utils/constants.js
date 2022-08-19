@@ -1,20 +1,20 @@
 //константы для index.js
-export const cardСontainer = document.querySelector('.elements');
-export const popupEdit = document.querySelector(".popup-edit");
-export const buttonEdit = document.querySelector(".profile__btn_type_edit");
-export const popupFormEdit = popupEdit.querySelector(".popup__form");
-export const inputName = popupEdit.querySelector(".popup__input_type_name");
-export const inputAbout = popupEdit.querySelector(".popup__input_type_about");
-export const popupAdd = document.querySelector(".popup-add");
-export const buttonAdd = document.querySelector(".profile__btn_type_add");
-export const popupFormAdd =  popupAdd.querySelector(".popup__form");
-export const inputCaption = popupAdd.querySelector(".popup__input_type_caption");
-export const inputLink = popupAdd.querySelector(".popup__input_type_link");
-export const popupImage = document.querySelector(".popup-image");
-export const imageView = popupImage.querySelector(".popup-image__image");
-export const imageCaption = popupImage.querySelector(".popup-image__caption");
-export const buttonAvatar = document.querySelector('.profile__btn-edit-avatar');
-export const popupAvatar = document.querySelector('.popup-avatar')
+// export const cardСontainer = document.querySelector('.elements');
+// export const popupEdit = document.querySelector(".popup-edit");
+// export const buttonEdit = document.querySelector(".profile__btn_type_edit");
+// export const popupFormEdit = popupEdit.querySelector(".popup__form");
+// export const inputName = popupEdit.querySelector(".popup__input_type_name");
+// export const inputAbout = popupEdit.querySelector(".popup__input_type_about");
+// export const popupAdd = document.querySelector(".popup-add");
+// export const buttonAdd = document.querySelector(".profile__btn_type_add");
+// export const popupFormAdd =  popupAdd.querySelector(".popup__form");
+// export const inputCaption = popupAdd.querySelector(".popup__input_type_caption");
+// export const inputLink = popupAdd.querySelector(".popup__input_type_link");
+// export const popupImage = document.querySelector(".popup-image");
+// export const imageView = popupImage.querySelector(".popup-image__image");
+// export const imageCaption = popupImage.querySelector(".popup-image__caption");
+// export const buttonAvatar = document.querySelector('.profile__btn-edit-avatar');
+// export const popupAvatar = document.querySelector('.popup-avatar')
 //тут хранятся экземпляры класса FormValidator
 export const formValidators = {};
 
@@ -70,4 +70,16 @@ export const userInfoConfig = {
   nameSelector: '.profile__name',
   aboutSelector: '.profile__about',
   avatarSelector: '.profile__avatar'
+}
+
+export const editProfileInitialValues = {
+  inputValues: { "input-name": '', "input-about": '' },
+  errorValues: { "input-name": '', "input-about": '' },
+  errorStates: { "input-name": false, "input-about": false }
+}
+
+export const addPlaceInitialValues = {
+  inputValues: { "input-place": '', "input-link": '' },
+  errorValues: { "input-place": '', "input-link": '' },
+  errorStates: { "input-place": false, "input-link": false }
 }

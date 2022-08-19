@@ -1,26 +1,45 @@
-import React from "react";
+import React, {useCallback, useState, useEffect} from "react";
 import Footer from "./Footer";
 import Header from "./Header";
 import Main from "./Main";
-import PopupWithForm from "./PopupWithForm";
+// import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import api from "../utils/api";
 import EditProfilePopup from "../components/EditProfilePopup";
 import EditAvatarPopup from "../components/EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
+import ConfirmationPopup from "./ConfirmationPopup";
+import ErrorPopup from './ErrorPopup' 
 
 function App() {
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
-    React.useState(false);
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
-    React.useState(false);
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-  const [selectedCard, setSelectedCard] = React.useState(null);
-  const [currentUser, setСurrentUser] = React.useState({});
-  const [cards, setCards] = React.useState([]);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
+  const [currentUser, setСurrentUser] = useState({});
+  const [cards, setCards] = useState([]);
+  const [deletedCard, setDeletedCard] = useState(null);
+  const [isRequestingServer, setIsRequestingServer] = useState(false);
+  const [serverError, setServerError] = useState(null);
 
-  function handleCardLike(card) {
+  const closeConfirmationPopup = useCallback(() => {
+    setDeletedCard(null);
+  }, []);
+
+  const openConfirmationPopup = useCallback((card) => {
+    setDeletedCard(card);
+  }, []);
+
+  const closeErrorPopup = useCallback(() => {
+    setServerError(null);
+  }, []);
+
+  const openErrorPopup = useCallback((error) => {
+    setServerError(error);
+  }, []);
+
+  const handleCardLike = useCallback((card) => {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
     if (isLiked) {
       api
@@ -28,50 +47,64 @@ function App() {
         .then((res) => {
           setCards((state) => state.map((c) => (c._id === card._id ? res : c)));
         })
-        .catch((err) => console.log(`Ошибка.....: ${err}`));
+        .catch((err) => {console.log(`Ошибка с кодом: ${err.errorCode}`);
+        console.dir(err);
+        openErrorPopup(err);
+      });
     } else {
       api
         .setlikeCard(card._id)
         .then((res) => {
           setCards((state) => state.map((c) => (c._id === card._id ? res : c)));
         })
-        .catch((err) => console.log(`Ошибка.....: ${err}`));
+        .catch((err) => {console.log(`Ошибка с кодом: ${err.errorCode}`);
+        console.dir(err);
+        openErrorPopup(err);
+      });
     }
-  }
+  }, []);
 
-  function handleCardDelete(card) {
+  const handleCardDelete = useCallback((card) => {
+    setIsRequestingServer(true);
     api
       .deleteCard(card._id)
       .then(() => {
         setCards((state) => state.filter((c) => c._id !== card._id && c));
+        closeConfirmationPopup();
       })
-      .catch((err) => console.log(`Ошибка.....: ${err}`));
-  }
+      .catch((err) => {console.log(`Ошибка с кодом: ${err.errorCode}`);
+      console.dir(err);
+      openErrorPopup(err);
+    })
+      .finally(() => {
+        setIsRequestingServer(false);
+      });
+  }, []);
 
-  function handleCardClick(card) {
+  const handleCardClick = useCallback((card) => {
     setSelectedCard(card);
-  }
+  }, []);
 
-  function handleEditAvatarClick() {
+  const handleEditAvatarClick = useCallback(() => {
     setIsEditAvatarPopupOpen(true);
-  }
+  }, []);
 
-  function handleEditProfileClick() {
+  const handleEditProfileClick = useCallback(() => {
     setIsEditProfilePopupOpen(true);
-  }
+  }, []);
 
-  function handleAddPlaceClick() {
+  const handleAddPlaceClick = useCallback(() => {
     setIsAddPlacePopupOpen(true);
-  }
+  }, []);
 
-  function closeAllPopups() {
+  const closeAllPopups = useCallback(() => {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setSelectedCard(null);
-  }
+  }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (
       isEditAvatarPopupOpen ||
       isEditProfilePopupOpen ||
@@ -97,43 +130,68 @@ function App() {
     selectedCard,
   ]);
 
-  function handleUpdateUser(data) {
+  const handleUpdateUser = useCallback((data) => {
+    setIsRequestingServer(true);
     api
       .patchProfile(data)
       .then((res) => {
         setСurrentUser(res);
         closeAllPopups();
       })
-      .catch((err) => console.log(`Ошибка.....: ${err}`));
-  }
+      .catch((err) => {console.log(`Ошибка с кодом: ${err.errorCode}`);
+      console.dir(err);
+      openErrorPopup(err);
+    })
+      .finally(() => {
+        setTimeout( () => {setIsRequestingServer(false)}, 300);
+      });
+  }, []);
 
-  function handleUpdateAvatar(data) {
+  const handleUpdateAvatar = useCallback((data) => {
+    setIsRequestingServer(true);
     api
       .setNewAvatar(data)
       .then((res) => {
+        console.dir(res)
         setСurrentUser(res);
         closeAllPopups();
       })
-      .catch((err) => console.log(`Ошибка.....: ${err}`));
-  }
+      .catch((err) => {console.log(`Ошибка с кодом: ${err.errorCode}`);
+      console.dir(err);
+      openErrorPopup(err);
+    })
+      .finally(() => {
+        setTimeout( () => {setIsRequestingServer(false)}, 300);
+      });
+  }, []);
 
-  function handleAddPlaceSubmit(data) {
+  const handleAddPlaceSubmit = useCallback((data) => {
+    setIsRequestingServer(true);
     api
       .addNewCard(data)
       .then((res) => {
         setCards([res, ...cards]);
         closeAllPopups();
       })
-      .catch((err) => console.log(`Ошибка.....: ${err}`));
-  }
+      .catch((err) => {console.log(`Ошибка с кодом: ${err.errorCode}`);
+      console.dir(err);
+      openErrorPopup(err);
+    })
+      .finally(() => {
+        setTimeout( () => {setIsRequestingServer(false)}, 300);
+      });
+  }, [cards]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     Promise.all([api.getUser(), api.getCards()])
       .then(([user, cards]) => {
         setСurrentUser(user);
         setCards(cards);
       })
-      .catch((err) => console.log(`Ошибка.....: ${err}`));
+      .catch((err) => {console.log(`Ошибка с кодом: ${err.errorCode}`);
+      console.dir(err);
+      openErrorPopup(err);
+    });
   }, []);
 
   return (
@@ -147,39 +205,46 @@ function App() {
           onCardClick={handleCardClick}
           cards={cards}
           onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
+          onCardDelete={openConfirmationPopup}
         />
         <Footer />
         <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
+          isRequesting={isRequestingServer}
         />
         <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
           onAddPlace={handleAddPlaceSubmit}
+          isRequesting={isRequestingServer}
         />
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
+          isRequesting={isRequestingServer}
         />
-        <PopupWithForm title="Вы уверены?" name="delete">
-          <h3 className="popup__title">Вы уверены?</h3>
-          <button className="popup__btn-save form__submit" type="submit">
-            Да
-          </button>
-        </PopupWithForm>
+        <ConfirmationPopup
+          card={deletedCard}
+          onSubmit={handleCardDelete}
+          onClose={closeConfirmationPopup}
+          isRequesting={isRequestingServer}
+        />
         <ImagePopup
           title="Посмотреть в полном размере"
           name="image"
           card={selectedCard}
           onClose={closeAllPopups}
         />
+        <ErrorPopup 
+          error={serverError}
+          onClose={closeErrorPopup}
+        />
       </div>
     </CurrentUserContext.Provider>
   );
 }
 
-export default App;
+export default React.memo(App);

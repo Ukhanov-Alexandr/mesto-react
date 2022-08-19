@@ -34,4 +34,4 @@ function ImagePopup({name, card, onClose}) {
   );
 }
 
-export default ImagePopup;
+export default React.memo(ImagePopup);

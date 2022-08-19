@@ -1,32 +1,25 @@
 import React from "react";
 import PopupWithForm from "./PopupWithForm";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import useFormValidations from "../hoocks/useFormValidations";
+import {editProfileInitialValues} from '../utils/constants'
 
-function EditProfilePopup({isOpen, onClose, onUpdateUser}) {
-  const [name, setName] = React.useState('');
-  const [description , setDescription ] = React.useState('');
+function EditProfilePopup({isOpen, onClose, onUpdateUser, isRequesting}) {
   const currentUser = React.useContext(CurrentUserContext);
-
-  const handleNameChange = (e) => {
-    setName(e.target.value)
-  }
-
-  const handleDescriptionChange = (e) => {
-    setDescription(e.target.value)
-  }
+  const {values, isErrors, errorMessages, handleValueChange, setValues, resetErrors} = useFormValidations(editProfileInitialValues);
 
   React.useEffect(() => {
-    if (currentUser.name && currentUser.about) {
-      setName(currentUser.name);
-      setDescription(currentUser.about);
+    if (!!currentUser.name && !!currentUser.about && isOpen) {
+      setValues({ "input-name": currentUser.name, "input-about": currentUser.about });
+      resetErrors();
     }
-  }, [currentUser, isOpen]); 
+  }, [currentUser.name, currentUser.about, isOpen]); 
 
   function handleSubmit(e){
     e.preventDefault();
     onUpdateUser({
-        name,
-        about: description,
+        name: values["input-name"],
+        about: values["input-about"]
     });
   }
 
@@ -39,34 +32,37 @@ function EditProfilePopup({isOpen, onClose, onUpdateUser}) {
       onSubmit={handleSubmit}
     >
       <input
-        className="popup__input popup__input_type_name"
+        className={`popup__input popup__input_type_name ${isErrors["input-name"] ? 'popup__input_type_error' : '' }`}
         name="input-name"
         type="text"
         placeholder="Имя"
         required
         minLength="2"
         maxLength="40"
-        value={name}
-        onChange={handleNameChange}
+        value={values["input-name"]}
+        onChange={handleValueChange}
       />
-      <span className="form__input-error input-name-error"></span>
+      <span className={`form__input-error input-about-error ${isErrors["input-name"] ? 'popup__input-error_active' : '' }`}>{errorMessages["input-name"]}</span>
       <input
-        className="popup__input popup__input_type_about"
+        className={`popup__input popup__input_type_about ${isErrors["input-about"] ? 'popup__input_type_error' : '' }`}
         name="input-about"
         type="text"
         placeholder="О себе"
         required
         minLength="2"
         maxLength="200"
-        value={description}
-        onChange={handleDescriptionChange}
+        value={values["input-about"]}
+        onChange={handleValueChange}
       />
-      <span className="form__input-error input-about-error"></span>
-      <button className="popup__btn-save form__submit" type="submit">
-        Сохранить
+      <span className={`form__input-error input-about-error ${isErrors["input-about"] ? 'popup__input-error_active' : '' }`}>{errorMessages["input-about"]}</span>
+      <button 
+        className={`popup__btn-save form__submit ${Object.values(isErrors).some((item) => item) ? 'form__submit_inactive' : ''}`} 
+        type="submit" 
+        disabled={Object.values(isErrors).some((item) => item)} >
+        {isRequesting ? 'Сохранение..' : "Сохранить"}
       </button>
     </PopupWithForm>
   );
 }
 
-export default EditProfilePopup;
+export default React.memo(EditProfilePopup);

@@ -43,4 +43,4 @@ const Card = ({ card, onClick, onCardLike, onTrashClick }) => {
   );
 };
 
-export default Card;
+export default React.memo(Card);

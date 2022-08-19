@@ -1,7 +1,7 @@
 import React from "react";
 import PopupWithForm from "./PopupWithForm";
 
-function EditAvatarPopup({isOpen, onClose, onUpdateAvatar}){
+function EditAvatarPopup({isOpen, onClose, onUpdateAvatar, isRequesting}){
   const avatarRef = React.useRef();
 
   function handleSubmit(e) {
@@ -27,10 +27,10 @@ function EditAvatarPopup({isOpen, onClose, onUpdateAvatar}){
       />
       <span className="form__input-error input-link-error"></span>
       <button className="popup__btn-save form__submit" type="submit" >
-        Сохранить
+        {isRequesting ? 'Сохранение..' : "Сохранить"}
       </button>
     </PopupWithForm>
   );
 }
 
-export default EditAvatarPopup;
+export default React.memo(EditAvatarPopup);

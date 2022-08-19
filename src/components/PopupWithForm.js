@@ -30,4 +30,4 @@ function PopupWithForm({isOpen, onClose, name, title, onSubmit, children}) {
   );
 }
 
-export default PopupWithForm;
+export default React.memo(PopupWithForm);
